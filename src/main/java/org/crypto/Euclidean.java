@@ -4,9 +4,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.math.BigInteger.ONE;
+import static java.math.BigInteger.ZERO;
 import static org.crypto.Utils.DOUBLE_TAB;
 
 public class Euclidean {
@@ -14,6 +17,12 @@ public class Euclidean {
             + DOUBLE_TAB + "%d" + DOUBLE_TAB + "*"
             + DOUBLE_TAB + "%d" + DOUBLE_TAB +
             "+" + DOUBLE_TAB + "%d\n";
+
+    private static final String EUCLIDEAN_TEMPLATE_BIG_INT = "%s" + DOUBLE_TAB + "="
+            + DOUBLE_TAB + "%s" + DOUBLE_TAB + "*"
+            + DOUBLE_TAB + "%s" + DOUBLE_TAB +
+            "+" + DOUBLE_TAB + "%s\n";
+
 
     public static Pair<Integer, List<Integer>> findGcdUsingEuclidean(int m, int n) {
         // form = n = q*m + r
@@ -84,6 +93,44 @@ public class Euclidean {
         // at this point tmpN has last value of r.
         System.out.printf("GCD(%d, %d) = %d.\n", m, n, tmpN);
         if (tmpN == 1) {
+            System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
+        }
+        return Pair.of(tmpN, quotients);
+    }
+
+    public static Pair<BigInteger, List<BigInteger>>           findGcdUsingEuclidean(BigInteger m, BigInteger n) {
+        // form = n = q*m + r
+        if (m.equals(n)) {
+            return Pair.of(m, new ArrayList<>() {{
+                add(ONE);
+            }});
+        }
+        // we need N to be the larger of the two, so when we do our euclidean we do n = q * m + r.
+        BigInteger tmpN = m.subtract(n).compareTo(ZERO) < 0 ? n : m;
+        BigInteger tmpM = m.subtract(n).compareTo(ZERO) < 0 ? m : n;
+        System.out.printf("Starting Euclidean, n = %s, m = %s\n", tmpN, tmpM);
+        // assert that n > m
+        assert (tmpN.compareTo(tmpM) > 0);
+        // prep quotients's for extended euclidean
+        ArrayList<BigInteger> quotients = new ArrayList<>();
+
+        BigInteger r = ZERO;
+        System.out.println("n" + DOUBLE_TAB + "="
+                + DOUBLE_TAB + "q" + DOUBLE_TAB + "*"
+                + DOUBLE_TAB + "m" + DOUBLE_TAB +
+                "+" + DOUBLE_TAB + "r");
+        do {
+            r = tmpN.mod(tmpM);
+            BigInteger q = (tmpN.subtract(r)).divide(tmpM);
+            quotients.add(q);
+            System.out.printf(EUCLIDEAN_TEMPLATE_BIG_INT, tmpN, q, tmpM, r);
+            tmpN = tmpM;
+            tmpM = r;
+        } while (!r.equals(ZERO));
+
+        // at this point tmpN has last value of r.
+        System.out.printf("GCD(%d, %d) = %d.\n", m, n, tmpN);
+        if (tmpN.equals(ONE)) {
             System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
         }
         return Pair.of(tmpN, quotients);

@@ -1,5 +1,7 @@
 package org.crypto;
 
+import java.math.BigInteger;
+
 import static org.crypto.Utils.DOUBLE_TAB;
 
 public class FastExponentiation {
@@ -18,6 +20,23 @@ public class FastExponentiation {
                 e = e - 1;
             }
             System.out.printf(FAST_EXPONENTIATION_TEMPLATE, x, e, y);
+        }
+        return y;
+    }
+
+    public static BigInteger fastExponentiation(BigInteger x, BigInteger e, BigInteger mod) {
+        BigInteger y = BigInteger.valueOf(1);
+        // System.out.printf("x" + DOUBLE_TAB + "e" + DOUBLE_TAB + "Y\n");
+        // System.out.printf(FAST_EXPONENTIATION_TEMPLATE, x, e, y);
+        while (!e.equals(BigInteger.valueOf(0))) {
+            if (e.mod(BigInteger.TWO).equals(BigInteger.ZERO)) {
+                x = (x.multiply(x)).mod(mod);
+                e = e.divide(BigInteger.TWO);
+            } else {
+                y = (x.multiply(y)).mod(mod);
+                e = e.subtract(BigInteger.ONE);
+            }
+            // System.out.printf(FAST_EXPONENTIATION_TEMPLATE, x, e, y);
         }
         return y;
     }

@@ -2,9 +2,11 @@ package org.crypto;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PrimesTest {
@@ -29,12 +31,39 @@ class PrimesTest {
     public void getPrimeFactorization() throws Exception {
         //Primes.findProperFactorsOf(111111111111111L);
         //Primes.findProperFactorsOf(110111101111011L);
-        Primes.getPrimeFactorization(161);
+        Map<Long, Integer> primes = Primes.getPrimeFactorization(161);
+        primes.forEach((factor, exp) -> {
+            System.out.printf("(%d ^ %d)", factor, exp);
+        });
+        System.out.println();
         //Primes.getPrimeFactorization(101010101010101L);
     }
 
     @Test
     public void getPrimeFactorizationForComposites() throws Exception {
         Primes.getPrimeFactorization(98724071000L);
+    }
+
+    @Test
+    public void testPrimalityHappyPath() {
+        assertTrue(Primes.isPrimeMillerRabin(BigInteger.valueOf(100000003709L), 5));
+    }
+
+    @Test
+    public void testPrimalityWithEvenNumbers() {
+        assertFalse(Primes.isPrimeMillerRabin(BigInteger.TWO.pow(20), 5));
+    }
+
+    @Test
+    public void testPrimalityWithNegativeNumber() {
+        assertFalse(Primes.isPrimeMillerRabin(BigInteger.valueOf(-1), 2));
+    }
+
+    @Test
+    public void testPrimeGenerationLogic() {
+//        BigInteger prime = Primes.generateLargePrimeWithNBits(1024);
+        assertTrue(Primes.isPrimeMillerRabin(BigInteger.valueOf(19441), 5));
+
+        System.out.printf("\n\nPRIME:\n\n%s\n\n", 19441);
     }
 }
