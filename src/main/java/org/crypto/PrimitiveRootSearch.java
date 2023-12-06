@@ -1,8 +1,10 @@
 package org.crypto;
 
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.math.BigInteger.ONE;
 import static org.crypto.FastExponentiation.fastExponentiation;
 
 public class PrimitiveRootSearch {
@@ -17,5 +19,30 @@ public class PrimitiveRootSearch {
             }
         });
         return isPrimitiveRoot.get();
+    }
+
+    public static BigInteger primitiveRootSearch(BigInteger n) {
+        boolean needToDiscardValue = false;
+        BigInteger b;
+        do {
+            // bbg is slow but works
+//            b = RandomGenerator.bbgGenerator(n.bitLength());
+            b = Utils.randomBigIntegerWithin(n);
+
+            System.out.println("Number generated: " + b);
+            Map<BigInteger, Integer> primeFactorization = Factorization.findAllFactorsUsingRhoFactorization(
+                    Primes.phi(n, Factorization.findAllFactorsUsingRhoFactorization(n))
+            );
+
+            BigInteger finalB = b;
+            for (Map.Entry<BigInteger, Integer> entry : primeFactorization.entrySet()) {
+                BigInteger prime = entry.getKey();
+                BigInteger res = fastExponentiation(finalB, n.subtract(ONE).divide(prime), n);
+                if (res.equals(ONE)) {
+                    needToDiscardValue = true;
+                }
+            }
+        } while (needToDiscardValue);
+        return b;
     }
 }

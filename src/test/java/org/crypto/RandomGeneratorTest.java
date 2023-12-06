@@ -11,8 +11,8 @@ public class RandomGeneratorTest {
 
     @Test
     public void testBbgGeneration() {
-        BigInteger integer = RandomGenerator.bbgGenerator(15);
-        assertTrue(integer.compareTo(TWO.pow(15)) < 0);
+        BigInteger integer = RandomGenerator.bbgGenerator(24);
+        assertTrue(integer.compareTo(TWO.pow(24)) < 0);
         System.out.println("integer generated: " + integer);
     }
 

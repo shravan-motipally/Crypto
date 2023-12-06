@@ -1,17 +1,18 @@
 package org.crypto;
 
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static java.math.BigInteger.*;
 import static org.crypto.Euclidean.findGcdUsingEuclidean;
-import static org.crypto.Primes.*;
+import static org.crypto.Primes.getPrimeFactorizationForPrimesLessThan1000;
+import static org.crypto.Primes.isPrimeMillerRabin;
 
 public class Factorization {
+
+    protected static Map<String, BigInteger> factorTable = new HashMap<>();
 
     public static BigInteger rhoFactorization(BigInteger n) {
         if (n.compareTo(ZERO) <= 0) {
@@ -27,6 +28,7 @@ public class Factorization {
         BigInteger g = findGcdUsingEuclidean(x.subtract(y).abs(), n).getLeft();
 
         BigInteger maxTries = n.sqrt().sqrt().multiply(BigInteger.valueOf(100));
+        System.out.printf("\n\n\nTrying a maximum of %s times\n\n\n", maxTries);
 
         if (g.equals(n)) {
             System.out.printf("Reinitializing because g = n, g = %s, n = %s\n", g, n);
@@ -38,8 +40,15 @@ public class Factorization {
         while (g.equals(ONE) && maxTries.compareTo(ZERO) > 0) {
             x = yFunc(x, n);
             y = yFunc(yFunc(y, n),n);
-            g = findGcdUsingEuclidean(x.subtract(y).abs(), n).getLeft();
-            System.out.printf("x: %s, y: %s, g: %s\n", x, y, g);
+            BigInteger xMinusY = x.subtract(y);
+            xMinusY = xMinusY.signum() == 0 || xMinusY.signum() == 1 ? xMinusY : xMinusY.add(n);
+            System.out.printf("x: %s, y: %s, xMinusY: %s\n", x, y, xMinusY);
+
+            g = findGcdUsingEuclidean(xMinusY, n).getLeft();
+            System.out.printf("g: %s\n", g);
+
+            System.out.printf("maxTries: %s\n", maxTries);
+
 
 
             if (g.equals(n)) {
@@ -113,7 +122,13 @@ public class Factorization {
     }
 
     private static BigInteger yFunc(BigInteger x, BigInteger mod) {
-        return (x.multiply(x)).add(ONE).mod(mod)    ;
+        String key = String.format("%s|%s",x,mod);
+        if (factorTable.containsKey(key)) {
+            return factorTable.get(key);
+        }
+        BigInteger res = (x.multiply(x)).add(ONE).mod(mod);
+        factorTable.put(key, res);
+        return res;
     }
 
     private static BigInteger reinitialize(BigInteger currentPrime) {

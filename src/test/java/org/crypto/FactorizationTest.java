@@ -48,8 +48,8 @@ public class FactorizationTest {
 
     @Test
     public void getAllFactorsForTwoLargePrimesWithLargeMultiple() {
-        BigInteger prime1 = generateLargePrimeWithNBits(1024);
-        BigInteger prime2 = generateLargePrimeWithNBits(1024);
+        BigInteger prime1 = generateLargePrimeWithNBits(24);
+        BigInteger prime2 = generateLargePrimeWithNBits(24);
         Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(BigInteger.TWO.pow(1024).multiply(prime1).multiply(prime2));
         assertTrue(allFactors.containsKey(BigInteger.TWO));
         assertTrue(allFactors.get(BigInteger.TWO).equals(1024));

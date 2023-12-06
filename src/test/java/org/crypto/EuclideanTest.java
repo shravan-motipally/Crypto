@@ -42,4 +42,10 @@ class EuclideanTest {
         assertEquals(xyPair.getLeft(), valueOf(39858));
         assertEquals(xyPair.getRight(), valueOf(-39239));
     }
+
+    @Test
+    public void getDecryptionExponentIfPhiAndExponentKnown() {
+        Pair<BigInteger, BigInteger> xyPair = Euclidean.findXYForExtendedEuclidean(valueOf(3), valueOf(15688));
+        assertTrue(xyPair.getLeft().equals(valueOf(-5229)) || xyPair.getLeft().equals(valueOf(15688 - 5229)));
+    }
 }

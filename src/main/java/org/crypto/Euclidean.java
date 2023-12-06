@@ -123,22 +123,22 @@ public class Euclidean {
         // we need N to be the larger of the two, so when we do our euclidean we do n = q * m + r.
         BigInteger tmpN = m.subtract(n).compareTo(ZERO) < 0 ? n : m;
         BigInteger tmpM = m.subtract(n).compareTo(ZERO) < 0 ? m : n;
-        System.out.printf("Starting Euclidean, n = %s, m = %s\n", tmpN, tmpM);
+//        System.out.printf("Starting Euclidean, n = %s, m = %s\n", tmpN, tmpM);
         // assert that n > m
         assert (tmpN.compareTo(tmpM) > 0);
         // prep quotients's for extended euclidean
         ArrayList<BigInteger> quotients = new ArrayList<>();
 
         BigInteger r = ZERO;
-        System.out.println("n" + DOUBLE_TAB + "="
-                + DOUBLE_TAB + "q" + DOUBLE_TAB + "*"
-                + DOUBLE_TAB + "m" + DOUBLE_TAB +
-                "+" + DOUBLE_TAB + "r");
+//        System.out.println("n" + DOUBLE_TAB + "="
+//                + DOUBLE_TAB + "q" + DOUBLE_TAB + "*"
+//                + DOUBLE_TAB + "m" + DOUBLE_TAB +
+//                "+" + DOUBLE_TAB + "r");
         do {
             r = tmpN.mod(tmpM);
             BigInteger q = (tmpN.subtract(r)).divide(tmpM);
             quotients.add(q);
-            System.out.printf(EUCLIDEAN_TEMPLATE_BIG_INT, tmpN, q, tmpM, r);
+//            System.out.printf(EUCLIDEAN_TEMPLATE_BIG_INT, tmpN, q, tmpM, r);
             tmpN = tmpM;
             tmpM = r;
         } while (!r.equals(ZERO));

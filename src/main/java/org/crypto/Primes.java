@@ -38,22 +38,22 @@ public class Primes {
        return result.get();
     }
 
-    public static long phi(BigInteger n, Map<Long, Integer> primeFactorization) {
-        System.out.println(format("Taking Phi(%d)", n));
-        System.out.println();
+    public static BigInteger phi(BigInteger n, Map<BigInteger, Integer> primeFactorization) {
+        System.out.printf("Taking Phi(%s)\n", n);
         StringBuilder primeBuilder = new StringBuilder("Prime factorization is: ");
         StringBuilder phiExpansionBuilder = new StringBuilder(format("Phi calculation: Phi(%d) = ", n));
-        AtomicLong result = new AtomicLong(1);
-        primeFactorization.forEach((prime, exponent) -> {
+        BigInteger result = ONE;
+        for (Map.Entry<BigInteger, Integer> entry : primeFactorization.entrySet()) {
+            BigInteger prime = entry.getKey();
+            Integer exponent = entry.getValue();
             primeBuilder.append("(" + prime + "^" + exponent + ")");
             phiExpansionBuilder.append("(" + prime + " - 1)" + prime + "^(" + exponent + " - 1) ");
-            long tmpResult = result.get() * (long)((prime - 1) * Math.pow(prime,exponent - 1));
-            result.set(tmpResult);
-        });
-        phiExpansionBuilder.append(format(" = %d\n", result.get()));
+            result = result.multiply((prime.subtract(ONE)).multiply(prime.pow(exponent - 1)));
+        }
+        phiExpansionBuilder.append(format(" = %d\n", result));
         System.out.println(primeBuilder);
         System.out.println(phiExpansionBuilder);
-        return result.get();
+        return result;
     }
 
     public static List<Integer> getPrimesUpTo(int n, boolean displayFactorsUptoN) throws Exception {
@@ -137,8 +137,17 @@ public class Primes {
                 }
             } // else continue
         }
-        System.out.printf("Prime factorization of %s is = ", n);
+        System.out.printf("Prime factorization of %s is = %s", n, showFactors(primeFactorization));
         return primeFactorization;
+    }
+
+    private static String showFactors(Map<BigInteger, Integer> factorization) {
+        StringBuilder builder = new StringBuilder();
+        factorization.forEach((factor, exp) -> {
+            builder.append(format("(%s^%s)", factor, exp));
+        });
+        builder.append("\n");
+        return builder.toString();
     }
 
     public static boolean isPrimeMillerRabin(BigInteger primeToCheck, int numberOfTrials) {
@@ -239,7 +248,7 @@ public class Primes {
                 testNumber = testNumber.subtract(ONE); // make it odd.
                // System.out.printf("Even # generated, so subtracting one. Number: %s\n", testNumber);
             }
-            tries.subtract(ONE);
+            tries = tries.subtract(ONE);
             System.out.printf("Try #: %s\n", tries);
             System.out.printf("tries.compareTo(ZERO) > 0: %b & ", tries.compareTo(ZERO) > 0);
             System.out.printf("isNumberDivisibleWithinPrimesLessThan1000: %b & ", isNumberDivisibleWithinPrimesLessThan1000(testNumber));
