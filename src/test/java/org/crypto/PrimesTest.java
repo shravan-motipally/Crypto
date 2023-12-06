@@ -6,8 +6,7 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PrimesTest {
 
@@ -65,5 +64,12 @@ class PrimesTest {
         assertTrue(Primes.isPrimeMillerRabin(BigInteger.valueOf(19441), 5));
 
         System.out.printf("\n\nPRIME:\n\n%s\n\n", 19441);
+    }
+
+    @Test
+    public void testPrimalityCache() {
+        boolean isPrime = Primes.isPrimeMillerRabin(BigInteger.valueOf(100000003709L), 5);
+        assertTrue(Primes.millerRabinStore.containsKey(BigInteger.valueOf(100000003709L)));
+        assertEquals(isPrime,Primes.millerRabinStore.get(BigInteger.valueOf(100000003709L)));
     }
 }

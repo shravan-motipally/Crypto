@@ -55,9 +55,9 @@ public class RSA {
     }
 
     public static BigInteger generateExponent(Pair<BigInteger, BigInteger> pair) {
-        if (!isPrimeMillerRabin(pair.getLeft(), 5) || !isPrimeMillerRabin(pair.getRight(), 5)) {
-            throw new RuntimeException("One of both prime numbers passed in were not prime.");
-        }
+//        if (!isPrimeMillerRabin(pair.getLeft(), 5) || !isPrimeMillerRabin(pair.getRight(), 5)) {
+//            throw new RuntimeException("One of both prime numbers passed in were not prime.");
+//        }
         BigInteger phi = pair.getLeft().subtract(ONE).multiply(pair.getRight().subtract(ONE)); // we're assuming the pair is prime.
 
         BigInteger exponent;

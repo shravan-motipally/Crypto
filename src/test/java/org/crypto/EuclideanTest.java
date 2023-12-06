@@ -1,9 +1,13 @@
 package org.crypto;
 
+import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+
 class EuclideanTest {
 
     @Test
@@ -30,5 +34,12 @@ class EuclideanTest {
     @Test
     public void expandedGcdTestForTest() {
         Pair<Integer, Integer> xyPair = Euclidean.findXYForExtendedEuclidean(3, 11872);
+    }
+
+    @Test
+    public void expandedGcdTestWithBigIntegers() {
+        Pair<BigInteger, BigInteger> xyPair = Euclidean.findXYForExtendedEuclidean(valueOf(102313), valueOf(103927));
+        assertEquals(xyPair.getLeft(), valueOf(39858));
+        assertEquals(xyPair.getRight(), valueOf(-39239));
     }
 }

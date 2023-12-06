@@ -13,6 +13,8 @@ import static org.crypto.Utils.randomBigIntegerWithin;
 
 public class Primes {
 
+    protected static HashMap<BigInteger, Boolean> millerRabinStore = new HashMap<>();
+
     /**
      * @param n - Number (n) that which we are taking phi(n) of.
      * @param primeFactorization Maps p (prime, long) to e (exponent, integer)
@@ -140,12 +142,18 @@ public class Primes {
     }
 
     public static boolean isPrimeMillerRabin(BigInteger primeToCheck, int numberOfTrials) {
+        if (millerRabinStore.containsKey(primeToCheck)) {
+            return millerRabinStore.get(primeToCheck);
+        }
+
         if (primeToCheck.mod(TWO).equals(ZERO)) {
             System.out.printf("Given number %s is even, so its not a prime\n", primeToCheck);
+            millerRabinStore.put(primeToCheck, false);
             return false;
         }
         if (primeToCheck.compareTo(ZERO) <= 0) {
             System.out.println("Negative number entered, bad input.");
+            millerRabinStore.put(primeToCheck, false);
             return false;
         }
         System.out.printf("Starting miller rabin primality test.\n n = %s\n", primeToCheck);
@@ -172,6 +180,7 @@ public class Primes {
             // second step
             if (res.equals(ONE) || res.equals(primeToCheck.subtract(ONE)) || res.equals(BigInteger.valueOf(-1))) {
                 //System.out.printf("One of the following is true %s = 1\n%s = %s - 1\n%s = -1\nSo we stop.\n", res, res, primeToCheck, res);
+                millerRabinStore.put(primeToCheck, true);
                 return true;
             } else {
                 //System.out.printf("%s != 1\n%s != %s - 1\n%s != -1\nSo we continue...\n", res, res, primeToCheck, res);
@@ -186,14 +195,17 @@ public class Primes {
 
                 if (b.equals(primeToCheck.subtract(ONE)) || b.equals(BigInteger.valueOf(-1))) {
                     //System.out.printf("%s is either equal to %s - 1 or -1\nTherefore, it is probably prime.", b, primeToCheck);
+                    millerRabinStore.put(primeToCheck, true);
                     return true;
                 } else if (b.equals(ONE)) {
                     //System.out.printf("%s is equal to 1\nTherefore, it is composite.", b, primeToCheck);
+                    millerRabinStore.put(primeToCheck, false);
                     return false;
                 }
             }
         }
         System.out.println("None of the trials have given a suitable result.  Therefore we cannot conclude it is a prime.");
+        millerRabinStore.put(primeToCheck, false);
         return false;
     }
 

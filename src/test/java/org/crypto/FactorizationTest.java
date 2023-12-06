@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.Map;
 
 import static org.crypto.Factorization.*;
+import static org.crypto.Primes.generateLargePrimeWithNBits;
 import static org.crypto.Primes.getPrimeFactorizationForPrimesLessThan1000;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -36,5 +37,23 @@ public class FactorizationTest {
         assertTrue(allFactors.containsKey(BigInteger.valueOf(7858288783L)));
         assertTrue(allFactors.containsKey(BigInteger.valueOf(11)));
         assertTrue(allFactors.containsKey(BigInteger.valueOf(2)));
+    }
+
+    @Test
+    public void getAllFactorsForTwoMultiple() {
+        Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(BigInteger.TWO.pow(1024));
+        assertTrue(allFactors.containsKey(BigInteger.TWO));
+        assertTrue(allFactors.get(BigInteger.TWO).equals(1024));
+    }
+
+    @Test
+    public void getAllFactorsForTwoLargePrimesWithLargeMultiple() {
+        BigInteger prime1 = generateLargePrimeWithNBits(1024);
+        BigInteger prime2 = generateLargePrimeWithNBits(1024);
+        Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(BigInteger.TWO.pow(1024).multiply(prime1).multiply(prime2));
+        assertTrue(allFactors.containsKey(BigInteger.TWO));
+        assertTrue(allFactors.get(BigInteger.TWO).equals(1024));
+        assertTrue(allFactors.containsKey(prime1));
+        assertTrue(allFactors.containsKey(prime2));
     }
 }

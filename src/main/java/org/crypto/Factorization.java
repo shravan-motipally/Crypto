@@ -79,6 +79,11 @@ public class Factorization {
         BigInteger remainder = n.divide(multiple);
         System.out.printf("After getting initial factors out, remainder is: %s, with multiple: %s - with factorization taken.\n", remainder, multiple);
 
+        if (remainder.equals(ONE)) {
+            // initialFactorization has taken care of everything, we can stop.
+            return initialFactorization;
+        }
+
         boolean isPrime = isPrimeMillerRabin(remainder,10 );
         if (isPrime) {
             System.out.printf("Remainder %s is a prime, so stopping here.\n", remainder);

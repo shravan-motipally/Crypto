@@ -1,11 +1,13 @@
 package org.crypto;
 
+import model.BigInteger2x2Matrix;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.RealMatrix;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static java.math.BigInteger.ONE;
@@ -22,6 +24,8 @@ public class Euclidean {
             + DOUBLE_TAB + "%s" + DOUBLE_TAB + "*"
             + DOUBLE_TAB + "%s" + DOUBLE_TAB +
             "+" + DOUBLE_TAB + "%s\n";
+
+    protected static final HashMap<String, Pair<BigInteger, List<BigInteger>>> euclideanStore = new HashMap<>();
 
 
     public static Pair<Integer, List<Integer>> findGcdUsingEuclidean(int m, int n) {
@@ -98,12 +102,23 @@ public class Euclidean {
         return Pair.of(tmpN, quotients);
     }
 
-    public static Pair<BigInteger, List<BigInteger>>           findGcdUsingEuclidean(BigInteger m, BigInteger n) {
+    public static Pair<BigInteger, List<BigInteger>> findGcdUsingEuclidean(BigInteger m, BigInteger n) {
+        String key = String.format("%s|%s", m, n);
+        String reverseKey = String.format("%s|%s", n, m);
+
+        if (euclideanStore.containsKey(key) || euclideanStore.containsKey(reverseKey)) {
+            return euclideanStore.containsKey(key) ? euclideanStore.get(key) : euclideanStore.get(reverseKey);
+        }
+
         // form = n = q*m + r
         if (m.equals(n)) {
-            return Pair.of(m, new ArrayList<>() {{
+
+            Pair<BigInteger, List<BigInteger>> res = Pair.of(m, new ArrayList<>() {{
                 add(ONE);
             }});
+            euclideanStore.put(key, res);
+            euclideanStore.put(reverseKey, res);
+            return res;
         }
         // we need N to be the larger of the two, so when we do our euclidean we do n = q * m + r.
         BigInteger tmpN = m.subtract(n).compareTo(ZERO) < 0 ? n : m;
@@ -133,7 +148,10 @@ public class Euclidean {
         if (tmpN.equals(ONE)) {
             System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
         }
-        return Pair.of(tmpN, quotients);
+        Pair<BigInteger, List<BigInteger>> res = Pair.of(tmpN, quotients);
+        euclideanStore.put(key, res);
+        euclideanStore.put(reverseKey, res);
+        return res;
     }
 
     public static Pair<Integer, Integer> findXYForExtendedEuclidean(int m, int n) {
@@ -220,6 +238,48 @@ public class Euclidean {
         return Pair.of(y, x);
     }
 
+    public static Pair<BigInteger, BigInteger> findXYForExtendedEuclidean(BigInteger m, BigInteger n) {
+        // form = n = q*m + r
+        if (m.equals(n)) {
+            return Pair.of(BigInteger.TWO, BigInteger.valueOf(-1L));
+        }
+        BigInteger tmpN = m.subtract(n).compareTo(ZERO) < 0 ? n : m;
+        BigInteger tmpM = m.subtract(n).compareTo(ZERO) < 0 ? m : n;
+        System.out.printf("Starting Extended Euclidean, n = %s, m = %s\n", tmpN, tmpM);
+        // assert that n > m
+        assert (tmpN.compareTo(tmpM) > 0);
+        Pair<BigInteger, List<BigInteger>> gcdValues = findGcdUsingEuclidean(tmpM, tmpN);
+        List<BigInteger> quotients = gcdValues.getRight();
+        int size = quotients.size();
+//        printQuotientMatrixForLongs(quotients);
+        System.out.println("-------------------");
+        int currentIndex = size - 1;
+        BigInteger2x2Matrix currentMultiple = getMatrixWithQuotient(quotients.get(currentIndex));
+        System.out.println("First coeff matrix\n" + currentMultiple);
+        quotients.forEach(i -> System.out.printf("%d ", i));
+        System.out.println();
+        while (currentIndex > 0) {
+            System.out.printf("CurrentIndex: %d\n", currentIndex);
+            currentIndex -= 1;
+            System.out.println("*");
+            BigInteger2x2Matrix currentMatrix = getMatrixWithQuotient(quotients.get(currentIndex));
+            System.out.println(currentMatrix);
+            System.out.println("=");
+            currentMultiple = currentMultiple.multiply(currentMatrix);
+            System.out.println(currentMultiple);
+
+        }
+        System.out.println("After all multiplications, the quotient matrix is: ");
+        System.out.println(currentMultiple);
+
+        BigInteger x = currentMultiple.matrix[0][0];
+        BigInteger y = currentMultiple.matrix[0][1];
+
+        System.out.printf("x = %d, y = %d, therefore %d * %d + %d * %d = %d\n",
+                y, x, y, tmpM, x, tmpN, gcdValues.getLeft());
+        return Pair.of(y, x);
+    }
+
 
     private static void printQuotientMatrix(List<Integer> quotients) {
         for (int i = quotients.size() -1; i >= 0; i--) {
@@ -232,6 +292,12 @@ public class Euclidean {
             System.out.println(getStringRep(getMatrixWithQuotient(quotients.get(i))));
         }
     }
+
+//    private static void printQuotientMatrixForBigIntegers(List<BigInteger> quotients) {
+//        for (int i = quotients.size() -1; i >= 0; i--) {
+//            System.out.println(getStringRep(getMatrixWithQuotient(quotients.get(i))));
+//        }
+//    }
 
     public static RealMatrix getMatrixWithQuotient(int quotient) {
         return new Array2DRowRealMatrix(
@@ -247,6 +313,15 @@ public class Euclidean {
                 new double[][]{
                         new double[]{0, 1},
                         new double[]{1, -1 * quotient}
+                }
+        );
+    }
+
+    public static BigInteger2x2Matrix getMatrixWithQuotient(BigInteger quotient) {
+        return new BigInteger2x2Matrix(
+                new BigInteger[][]{
+                        new BigInteger[]{ZERO, ONE},
+                        new BigInteger[]{ONE, quotient.multiply(BigInteger.valueOf(-1))}
                 }
         );
     }

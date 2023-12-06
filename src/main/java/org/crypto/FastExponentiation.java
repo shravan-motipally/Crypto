@@ -1,10 +1,14 @@
 package org.crypto;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 
+import static java.lang.String.format;
 import static org.crypto.Utils.DOUBLE_TAB;
 
 public class FastExponentiation {
+
+    protected static HashMap<String, BigInteger> store = new HashMap<>();
 
     public static final String FAST_EXPONENTIATION_TEMPLATE = "%d" + DOUBLE_TAB + "%d" + DOUBLE_TAB + "%d\n";
     public static long fastExponentiation(long x, long e, long mod) {
@@ -25,6 +29,10 @@ public class FastExponentiation {
     }
 
     public static BigInteger fastExponentiation(BigInteger x, BigInteger e, BigInteger mod) {
+        String key = format("%s|%s|%s", x, e, mod);
+        if (store.containsKey(key)) {
+            return store.get(key);
+        }
         BigInteger y = BigInteger.valueOf(1);
         // System.out.printf("x" + DOUBLE_TAB + "e" + DOUBLE_TAB + "Y\n");
         // System.out.printf(FAST_EXPONENTIATION_TEMPLATE, x, e, y);
@@ -38,6 +46,7 @@ public class FastExponentiation {
             }
             // System.out.printf(FAST_EXPONENTIATION_TEMPLATE, x, e, y);
         }
+        store.put(key,y);
         return y;
     }
 
