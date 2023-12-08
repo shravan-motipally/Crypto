@@ -260,7 +260,7 @@ public class Primes {
         if (tries.equals(ZERO)) {
             // at this point - most likely trials have not found a result.
             System.err.println("Trials have concluded with no prime number.");
-            return BigInteger.valueOf(-1);
+            throw new RuntimeException("No prime number found");
         }
         return testNumber;
     }

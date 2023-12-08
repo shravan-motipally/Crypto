@@ -19,4 +19,10 @@ public class PrimitiveRootSearchTest {
     public void findPrimitiveRootWithGroupGiven() throws Exception {
         System.out.println(PrimitiveRootSearch.primitiveRootSearch(BigInteger.valueOf(131L)));
     }
+
+    @Test
+    public void testPrimitiveRootSearch() throws Exception {
+        BigInteger generator = PrimitiveRootSearch.primitiveRootSearch(BigInteger.valueOf(5));
+        System.out.println(generator);
+    }
 }

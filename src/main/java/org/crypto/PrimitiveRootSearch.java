@@ -21,25 +21,25 @@ public class PrimitiveRootSearch {
         return isPrimitiveRoot.get();
     }
 
-    public static BigInteger primitiveRootSearch(BigInteger n) {
+    public static BigInteger primitiveRootSearch(BigInteger p) {
         boolean needToDiscardValue = false;
         BigInteger b;
         do {
             // bbg is slow but works
 //            b = RandomGenerator.bbgGenerator(n.bitLength());
-            b = Utils.randomBigIntegerWithin(n);
-
+            b = Utils.randomBigIntegerWithin(p);
+            needToDiscardValue = false;
             System.out.println("Number generated: " + b);
             Map<BigInteger, Integer> primeFactorization = Factorization.findAllFactorsUsingRhoFactorization(
-                    Primes.phi(n, Factorization.findAllFactorsUsingRhoFactorization(n))
+                    Primes.phi(p, Factorization.findAllFactorsUsingRhoFactorization(p))
             );
 
-            BigInteger finalB = b;
             for (Map.Entry<BigInteger, Integer> entry : primeFactorization.entrySet()) {
-                BigInteger prime = entry.getKey();
-                BigInteger res = fastExponentiation(finalB, n.subtract(ONE).divide(prime), n);
+                BigInteger q = entry.getKey();
+                BigInteger res = fastExponentiation(b, p.subtract(ONE).divide(q), p);
                 if (res.equals(ONE)) {
                     needToDiscardValue = true;
+                    break;
                 }
             }
         } while (needToDiscardValue);
