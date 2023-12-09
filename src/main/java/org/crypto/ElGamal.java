@@ -45,18 +45,26 @@ public class ElGamal {
         return inverse.multiply(encryptedMessage).mod(group);
     }
 
-    public static BigInteger findEncryptionKey(ElGamalPair pair, int maxBits) {
-        if (pair.getEncryptionKey().equals(pair.getGenerator())) {
-            return ONE;
+    public static BigInteger eavesdrop(BigInteger encryptedMessage, ElGamalPair alicePubKey, ElGamalPair bobPubKey) {
+        BigInteger group = alicePubKey.getGroup();
+        BigInteger generator = alicePubKey.getGenerator();
+        BigInteger aliceKey = alicePubKey.getEncryptionKey();
+        BigInteger bobKey = bobPubKey.getEncryptionKey();
+
+        if (!generator.equals(bobPubKey.getGenerator())) {
+            throw new RuntimeException("Generators do not match!  Unable to eavesdrop.");
         }
 
-        BigInteger max = TWO.pow(maxBits);
-        BigInteger currentRand;
+        if (!group.equals(bobPubKey.getGroup())) {
+            throw new RuntimeException("Group is not the same!  Unable to eavesdrop.");
+        }
 
-        do {
-           currentRand = Utils.randomBigIntegerWithin(max);
+        BigInteger recoveredAliceSecret = LittleStepGiantStep.findDiscreteLog_B_Of_A_InZ_P(generator, aliceKey, group);
+        BigInteger recoveredBobSecret = LittleStepGiantStep.findDiscreteLog_B_Of_A_InZ_P(generator, bobKey, group);
 
-        } while (ONE.equals(TWO));
-        return null;
+        BigInteger jointKey = fastExponentiation(generator, recoveredAliceSecret.multiply(recoveredBobSecret), group);
+        BigInteger inverse = fastExponentiation(jointKey, group.subtract(TWO), group);
+
+        return encryptedMessage.multiply(inverse).mod(group);
     }
 }

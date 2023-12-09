@@ -57,6 +57,44 @@ public class ElGamalTest {
     }
 
 
+    @Test
+    public void testElGamalWithTeamAsAlice() {
+        BigInteger group = new BigInteger("10901741");
+        BigInteger generator = new BigInteger("7200621");
+        BigInteger myEncryptionKey = new BigInteger("4855820");
+        BigInteger mySecret = new BigInteger("8316155");
+        BigInteger theirKey = new BigInteger("4025289");
+        assertTrue(isPrimeMillerRabin(group, 5));
 
+        BigInteger message = new BigInteger("48276"); // as group is prime
+
+        Pair<ElGamalPair, BigInteger> ourDetails = Pair.of(new ElGamalPair(group, generator, myEncryptionKey), mySecret);
+        Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, theirKey), null);
+
+        BigInteger encryptedMessage = ElGamal.encrypt(message, group, ourDetails.getRight(), otherDetails.getLeft());
+
+        //Share the following with the team.
+        System.out.println("Encrypted message: " + encryptedMessage);
+    }
+
+
+    @Test
+    public void testElGamalWithTeamAsBob() {
+        BigInteger group = new BigInteger("16300051");
+        BigInteger generator = new BigInteger("6353629");
+        BigInteger aliceEncryptionKey = new BigInteger("1183985");
+        BigInteger mySecret = new BigInteger("4309990");
+        BigInteger bobKey = new BigInteger("1378805");
+        assertTrue(isPrimeMillerRabin(group, 5));
+
+        BigInteger message = new BigInteger("11335333");
+        assert(message.compareTo(group) < 0);
+
+        Pair<ElGamalPair, BigInteger> aliceDetails = Pair.of(new ElGamalPair(group, generator, aliceEncryptionKey), null);
+        Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, bobKey), mySecret);
+
+        BigInteger encryptedMessage = new BigInteger("7138328");
+        assertEquals(message, ElGamal.decrypt(encryptedMessage, group, otherDetails.getRight(), aliceDetails.getLeft()));
+    }
 
 }
