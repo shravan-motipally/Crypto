@@ -23,13 +23,15 @@ public class LittleStepGiantStepTest {
 
     @Test
     public void testLSGSViaElGamal() {
-        BigInteger prime = valueOf(16300051L);//Primes.generateLargePrimeWithNBits(24);
+        BigInteger group = valueOf(10901741);
         // we assume that the group (prime) is sniffed by MiTM attack.
-        Pair<ElGamalPair, BigInteger> publicKeyAndSecret = ElGamal.generatePublicKeyAndSecret(prime);
-        ElGamalPair publicKey = new ElGamalPair(new BigInteger("16300051"), new BigInteger("6353629"), new BigInteger("1378805"));
+        BigInteger generator = new BigInteger("7200621");
+//        Pair<ElGamalPair, BigInteger> publicKeyAndSecret = ElGamal.generatePublicKeyAndSecret(group);
+//        ElGamalPair publicKey = new ElGamalPair(group, generator, new BigInteger("1378805"));
 //        BigInteger secret = publicKeyAndSecret.getRight(); // attacker does not have this info.
-        BigInteger recoveredSecret = LittleStepGiantStep.findDiscreteLog_B_Of_A_InZ_P(publicKey.getGenerator(), publicKey.getEncryptionKey(), prime);
-
+        BigInteger recoveredSecret = LittleStepGiantStep.findDiscreteLog_B_Of_A_InZ_P(generator,
+                new BigInteger("7106903"), group);
+        System.out.println(recoveredSecret);
 //        assertEquals(secret, recoveredSecret);
     }
 

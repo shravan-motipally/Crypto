@@ -16,6 +16,24 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ElGamalTest {
 
     @Test
+    public void ensureGroupGeneratedIsAPrimeNumber() {
+        BigInteger groupGenerated = generateCommonGroup(24);
+        assertTrue(isPrimeMillerRabin(groupGenerated, 5));
+    }
+
+    @Test
+    public void ensureGroupGenerationValidatesInput() {
+        assertThrows(RuntimeException.class, () -> {
+            generateCommonGroup(-1);
+        });
+        assertThrows(RuntimeException.class, () -> {
+            generateCommonGroup(0);
+        });
+    }
+
+
+
+    @Test
     public void ensureInverseMethodWorksAsIntended() {
         BigInteger prime = Primes.generateLargePrimeWithNBits(24);
         BigInteger randomNumber = Utils.randomBigIntegerWithin(prime);
@@ -63,10 +81,10 @@ public class ElGamalTest {
         BigInteger generator = new BigInteger("7200621");
         BigInteger myEncryptionKey = new BigInteger("4855820");
         BigInteger mySecret = new BigInteger("8316155");
-        BigInteger theirKey = new BigInteger("4025289");
+        BigInteger theirKey = new BigInteger("7106903");
         assertTrue(isPrimeMillerRabin(group, 5));
 
-        BigInteger message = new BigInteger("48276"); // as group is prime
+        BigInteger message = new BigInteger("9458119"); // as group is prime
 
         Pair<ElGamalPair, BigInteger> ourDetails = Pair.of(new ElGamalPair(group, generator, myEncryptionKey), mySecret);
         Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, theirKey), null);
@@ -93,8 +111,21 @@ public class ElGamalTest {
         Pair<ElGamalPair, BigInteger> aliceDetails = Pair.of(new ElGamalPair(group, generator, aliceEncryptionKey), null);
         Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, bobKey), mySecret);
 
-        BigInteger encryptedMessage = new BigInteger("7138328");
+        BigInteger encryptedMessage = new BigInteger("8200878");
         assertEquals(message, ElGamal.decrypt(encryptedMessage, group, otherDetails.getRight(), aliceDetails.getLeft()));
+    }
+
+    @Test
+    public void testElGamalAsEve() {
+        BigInteger group = valueOf(16396147L);
+        BigInteger generator = new BigInteger("2");
+        BigInteger encryptedMessage = new BigInteger("14521569");
+        ElGamalPair bobEncKey = new ElGamalPair(group, generator, new BigInteger("15682381"));
+        ElGamalPair aliceEncKey = new ElGamalPair(group, generator, new BigInteger("7197288"));
+
+        BigInteger message = new BigInteger("");
+
+        assertEquals(message, ElGamal.eavesdrop(encryptedMessage, aliceEncKey, bobEncKey));
     }
 
 }

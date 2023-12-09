@@ -5,7 +5,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigInteger;
 
-import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.TWO;
 import static org.crypto.FastExponentiation.fastExponentiation;
 import static org.crypto.PrimitiveRootSearch.primitiveRootSearch;
@@ -13,7 +12,10 @@ import static org.crypto.PrimitiveRootSearch.primitiveRootSearch;
 public class ElGamal {
 
     public static BigInteger generateCommonGroup(int maxBits) {
-        return Primes.generateLargePrimeWithNBits(maxBits);
+        if (maxBits >= 1) {
+            return Primes.generateLargePrimeWithNBits(maxBits);
+        }
+        throw new RuntimeException("Nonzero/Nonnegative max bits expected.  Given: " + maxBits);
     }
 
     public static Pair<ElGamalPair, BigInteger> generatePublicKeyAndSecret(BigInteger group) {
