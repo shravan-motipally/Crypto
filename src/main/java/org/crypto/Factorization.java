@@ -28,10 +28,10 @@ public class Factorization {
         BigInteger g = findGcdUsingEuclidean(x.subtract(y).abs(), n).getLeft();
 
         BigInteger maxTries = n.sqrt().sqrt().multiply(BigInteger.valueOf(100));
-        System.out.printf("\n\n\nTrying a maximum of %s times\n\n\n", maxTries);
+//        System.out.printf("\n\n\nTrying a maximum of %s times\n\n\n", maxTries);
 
         if (g.equals(n)) {
-            System.out.printf("Reinitializing because g = n, g = %s, n = %s\n", g, n);
+//            System.out.printf("Reinitializing because g = n, g = %s, n = %s\n", g, n);
             x = reinitialize(x);
             y = yFunc(x, n);
             g = findGcdUsingEuclidean(x.subtract(y).abs(), n).getLeft();
@@ -42,12 +42,12 @@ public class Factorization {
             y = yFunc(yFunc(y, n),n);
             BigInteger xMinusY = x.subtract(y);
             xMinusY = xMinusY.signum() == 0 || xMinusY.signum() == 1 ? xMinusY : xMinusY.add(n);
-            System.out.printf("x: %s, y: %s, xMinusY: %s\n", x, y, xMinusY);
+//            System.out.printf("x: %s, y: %s, xMinusY: %s\n", x, y, xMinusY);
 
             g = findGcdUsingEuclidean(xMinusY, n).getLeft();
-            System.out.printf("g: %s\n", g);
-
-            System.out.printf("maxTries: %s\n", maxTries);
+//            System.out.printf("g: %s\n", g);
+//
+//            System.out.printf("maxTries: %s\n", maxTries);
 
 
 
@@ -86,7 +86,7 @@ public class Factorization {
             multiple = getMultiple(initialFactorization);
         }
         BigInteger remainder = n.divide(multiple);
-        System.out.printf("After getting initial factors out, remainder is: %s, with multiple: %s - with factorization taken.\n", remainder, multiple);
+//        System.out.printf("After getting initial factors out, remainder is: %s, with multiple: %s - with factorization taken.\n", remainder, multiple);
 
         if (remainder.equals(ONE)) {
             // initialFactorization has taken care of everything, we can stop.
@@ -95,7 +95,7 @@ public class Factorization {
 
         boolean isPrime = isPrimeMillerRabin(remainder,10 );
         if (isPrime) {
-            System.out.printf("Remainder %s is a prime, so stopping here.\n", remainder);
+//            System.out.printf("Remainder %s is a prime, so stopping here.\n", remainder);
             initialFactorization.put(remainder, initialFactorization.containsKey(remainder) ? initialFactorization.get(remainder) + 1 : 1);
             return initialFactorization;
         }
@@ -103,13 +103,13 @@ public class Factorization {
         BigInteger factor;
 
         factor = rhoFactorization(remainder);
-        System.out.printf("Factor %s found!\n", factor);
+//        System.out.printf("Factor %s found!\n", factor);
         isPrime = isPrimeMillerRabin(factor, 5);
         if (isPrime) {
-            System.out.printf("Turns out it (%s) was prime.\n", factor);
+//            System.out.printf("Turns out it (%s) was prime.\n", factor);
             initialFactorization.put(factor, initialFactorization.containsKey(factor) ? initialFactorization.get(factor) + 1 : 1);
         } else {
-            System.out.printf("Turns out %s was not prime.\n", factor);
+//            System.out.printf("Turns out %s was not prime.\n", factor);
             Map<BigInteger, Integer> factorizationForFactor = findAllFactorsUsingRhoFactorization(factor);
             factorizationForFactor.forEach((fact, exponent) -> initialFactorization.merge(fact, exponent,
                     Integer::sum));

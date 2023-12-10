@@ -1,7 +1,6 @@
 package model;
 
 import java.math.BigInteger;
-import java.util.List;
 
 public class BigInteger2x2Matrix {
 

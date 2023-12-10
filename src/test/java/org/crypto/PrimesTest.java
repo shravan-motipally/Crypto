@@ -3,6 +3,7 @@ package org.crypto;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,8 @@ class PrimesTest {
 
     @Test
     public void phiTest() throws Exception {
-        //assertEquals(Primes.phi(20, new HashMap<>(){{ put(2L, 2); put(5L, 1); }}), 8L);
         long numberToTest = 100L;
-        Primes.phi(numberToTest, Primes.getPrimeFactorization(numberToTest));
+        assertEquals(40, Primes.phi(numberToTest, Primes.getPrimeFactorization(numberToTest)));
     }
 
     @Test
@@ -22,25 +22,17 @@ class PrimesTest {
         List<Integer> primes = Primes.getPrimesUpTo(10000, true);
         for (Integer prime : primes) {
             Map<Long, Integer> primeFactorization = Primes.getPrimeFactorization((long) prime);
-            assertTrue(primeFactorization.size() == 1);
+            assertEquals( 1, primeFactorization.size());
         }
     }
 
     @Test
-    public void getPrimeFactorization() throws Exception {
-        //Primes.findProperFactorsOf(111111111111111L);
-        //Primes.findProperFactorsOf(110111101111011L);
-        Map<Long, Integer> primes = Primes.getPrimeFactorization(161);
-        primes.forEach((factor, exp) -> {
-            System.out.printf("(%d ^ %d)", factor, exp);
-        });
-        System.out.println();
-        //Primes.getPrimeFactorization(101010101010101L);
-    }
-
-    @Test
-    public void getPrimeFactorizationForComposites() throws Exception {
-        Primes.getPrimeFactorization(98724071000L);
+    public void testPrimeFactorizationForComposites() throws Exception {
+        BigInteger composite = BigInteger.valueOf(98724071000L);
+        Map<Long, Integer> factorization = Primes.getPrimeFactorization(98724071000L);
+        Map<BigInteger, Integer> factors = new HashMap<>();
+        factorization.forEach((key, value) -> factors.put(BigInteger.valueOf(key), value));
+        assertEquals(composite, Factorization.getMultiple(factors));
     }
 
     @Test
@@ -60,10 +52,9 @@ class PrimesTest {
 
     @Test
     public void testPrimeGenerationLogic() {
-//        BigInteger prime = Primes.generateLargePrimeWithNBits(1024);
-        assertTrue(Primes.isPrimeMillerRabin(BigInteger.valueOf(19441), 5));
-
-        System.out.printf("\n\nPRIME:\n\n%s\n\n", 19441);
+        for (int i = 0; i < 10; i++) {
+            assertTrue(Primes.isPrimeMillerRabin(BigInteger.valueOf(16396147), 10));
+        }
     }
 
     @Test

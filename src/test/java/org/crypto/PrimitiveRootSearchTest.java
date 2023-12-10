@@ -25,4 +25,13 @@ public class PrimitiveRootSearchTest {
         BigInteger generator = PrimitiveRootSearch.primitiveRootSearch(BigInteger.valueOf(5));
         System.out.println(generator);
     }
+
+    @Test
+    public void testPrimitiveRootSearchToEnsureItAlwaysGivesNonZeroNonNegativeBigInteger() {
+        BigInteger generator;
+        for (int i = 0; i <= 10; i++) {
+            generator = PrimitiveRootSearch.primitiveRootSearch(BigInteger.valueOf(5));
+            assertNotEquals(BigInteger.ZERO, generator);
+        }
+    }
 }

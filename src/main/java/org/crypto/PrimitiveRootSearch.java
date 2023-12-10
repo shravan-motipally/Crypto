@@ -22,14 +22,14 @@ public class PrimitiveRootSearch {
     }
 
     public static BigInteger primitiveRootSearch(BigInteger p) {
-        boolean needToDiscardValue = false;
+        boolean needToDiscardValue;
         BigInteger b;
         do {
             // bbg is slow but works
 //            b = RandomGenerator.bbgGenerator(n.bitLength());
             b = Utils.randomBigIntegerWithin(p);
-            needToDiscardValue = false;
-            System.out.println("Number generated: " + b);
+            needToDiscardValue = b.equals(BigInteger.ZERO);
+//            System.out.println("Number generated: " + b);
             Map<BigInteger, Integer> primeFactorization = Factorization.findAllFactorsUsingRhoFactorization(
                     Primes.phi(p, Factorization.findAllFactorsUsingRhoFactorization(p))
             );

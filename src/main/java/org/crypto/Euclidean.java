@@ -59,9 +59,9 @@ public class Euclidean {
 
         // at this point tmpN has last value of r.
         System.out.printf("GCD(%d, %d) = %d.\n", m, n, tmpN);
-        if (tmpN == 1) {
-            System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
-        }
+//        if (tmpN == 1) {
+//            System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
+//        }
         return Pair.of(tmpN, quotients);
     }
 
@@ -74,7 +74,7 @@ public class Euclidean {
         }
         long tmpN = Math.max(m, n);
         long tmpM = Math.min(m, n);
-        System.out.printf("Starting Euclidean, n = %d, m = %d\n", tmpN, tmpM);
+//        System.out.printf("Starting Euclidean, n = %d, m = %d\n", tmpN, tmpM);
         // assert that n > m
         assert (tmpN > tmpM);
         // prep quotients's for extended euclidean
@@ -89,16 +89,16 @@ public class Euclidean {
             r = tmpN % tmpM;
             long q = (tmpN - r) / tmpM;
             quotients.add(q);
-            System.out.printf(EUCLIDEAN_TEMPLATE, tmpN, q, tmpM, r);
+//            System.out.printf(EUCLIDEAN_TEMPLATE, tmpN, q, tmpM, r);
             tmpN = tmpM;
             tmpM = r;
         } while (r != 0);
 
         // at this point tmpN has last value of r.
-        System.out.printf("GCD(%d, %d) = %d.\n", m, n, tmpN);
-        if (tmpN == 1) {
-            System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
-        }
+//        System.out.printf("GCD(%d, %d) = %d.\n", m, n, tmpN);
+//        if (tmpN == 1) {
+//            System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
+//        }
         return Pair.of(tmpN, quotients);
     }
 
@@ -144,10 +144,10 @@ public class Euclidean {
         } while (!r.equals(ZERO));
 
         // at this point tmpN has last value of r.
-        System.out.printf("GCD(%d, %d) = %d.\n", m, n, tmpN);
-        if (tmpN.equals(ONE)) {
-            System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
-        }
+//        System.out.printf("GCD(%d, %d) = %d.\n", m, n, tmpN);
+//        if (tmpN.equals(ONE)) {
+//            System.out.printf("Note: %d and %d are relatively prime.\n", m, n);
+//        }
         Pair<BigInteger, List<BigInteger>> res = Pair.of(tmpN, quotients);
         euclideanStore.put(key, res);
         euclideanStore.put(reverseKey, res);
@@ -161,38 +161,38 @@ public class Euclidean {
         }
         int tmpN = Math.max(m, n);
         int tmpM = Math.min(m, n);
-        System.out.printf("Starting Extended Euclidean, n = %d, m = %d\n", tmpN, tmpM);
+//        System.out.printf("Starting Extended Euclidean, n = %d, m = %d\n", tmpN, tmpM);
         // assert that n > m
         assert (tmpN > tmpM);
         Pair<Integer, List<Integer>> gcdValues = findGcdUsingEuclidean(tmpM, tmpN);
         List<Integer> quotients = gcdValues.getRight();
         int size = quotients.size();
         printQuotientMatrix(quotients);
-        System.out.println("-------------------");
+//        System.out.println("-------------------");
         int currentIndex = size - 1;
         RealMatrix currentMultiple = getMatrixWithQuotient(quotients.get(currentIndex));
-        System.out.println("First coeff matrix\n" + getStringRep(currentMultiple));
-        quotients.forEach(i -> System.out.printf("%d ", i));
-        System.out.println();
+//        System.out.println("First coeff matrix\n" + getStringRep(currentMultiple));
+//        quotients.forEach(i -> System.out.printf("%d ", i));
+//        System.out.println();
         while (currentIndex > 0) {
-            System.out.printf("CurrentIndex: %d\n", currentIndex);
+//            System.out.printf("CurrentIndex: %d\n", currentIndex);
             currentIndex -= 1;
-            System.out.println("*");
+//            System.out.println("*");
             RealMatrix currentMatrix = getMatrixWithQuotient(quotients.get(currentIndex));
-            System.out.println(getStringRep(currentMatrix));
-            System.out.println("=");
+//            System.out.println(getStringRep(currentMatrix));
+//            System.out.println("=");
             currentMultiple = currentMultiple.multiply(currentMatrix);
-            System.out.println(getStringRep(currentMultiple));
+//            System.out.println(getStringRep(currentMultiple));
 
         }
-        System.out.println("After all multiplications, the quotient matrix is: ");
-        System.out.println(getStringRep(currentMultiple));
+//        System.out.println("After all multiplications, the quotient matrix is: ");
+//        System.out.println(getStringRep(currentMultiple));
 
         int x = (int) currentMultiple.getRow(0)[0];
         int y = (int) currentMultiple.getRow(0)[1];
 
-        System.out.printf("x = %d, y = %d, therefore %d * %d + %d * %d = %d\n",
-                y, x, y, tmpM, x, tmpN, gcdValues.getLeft());
+//        System.out.printf("x = %d, y = %d, therefore %d * %d + %d * %d = %d\n",
+//                y, x, y, tmpM, x, tmpN, gcdValues.getLeft());
         return Pair.of(y, x);
     }
 
@@ -245,38 +245,38 @@ public class Euclidean {
         }
         BigInteger tmpN = m.subtract(n).compareTo(ZERO) < 0 ? n : m;
         BigInteger tmpM = m.subtract(n).compareTo(ZERO) < 0 ? m : n;
-        System.out.printf("Starting Extended Euclidean, n = %s, m = %s\n", tmpN, tmpM);
+//        System.out.printf("Starting Extended Euclidean, n = %s, m = %s\n", tmpN, tmpM);
         // assert that n > m
         assert (tmpN.compareTo(tmpM) > 0);
         Pair<BigInteger, List<BigInteger>> gcdValues = findGcdUsingEuclidean(tmpM, tmpN);
         List<BigInteger> quotients = gcdValues.getRight();
         int size = quotients.size();
 //        printQuotientMatrixForLongs(quotients);
-        System.out.println("-------------------");
+//        System.out.println("-------------------");
         int currentIndex = size - 1;
         BigInteger2x2Matrix currentMultiple = getMatrixWithQuotient(quotients.get(currentIndex));
-        System.out.println("First coeff matrix\n" + currentMultiple);
-        quotients.forEach(i -> System.out.printf("%d ", i));
-        System.out.println();
+//        System.out.println("First coeff matrix\n" + currentMultiple);
+//        quotients.forEach(i -> System.out.printf("%d ", i));
+//        System.out.println();
         while (currentIndex > 0) {
-            System.out.printf("CurrentIndex: %d\n", currentIndex);
+//            System.out.printf("CurrentIndex: %d\n", currentIndex);
             currentIndex -= 1;
-            System.out.println("*");
+            //System.out.println("*");
             BigInteger2x2Matrix currentMatrix = getMatrixWithQuotient(quotients.get(currentIndex));
-            System.out.println(currentMatrix);
-            System.out.println("=");
+            //System.out.println(currentMatrix);
+            //System.out.println("=");
             currentMultiple = currentMultiple.multiply(currentMatrix);
-            System.out.println(currentMultiple);
+            //System.out.println(currentMultiple);
 
         }
-        System.out.println("After all multiplications, the quotient matrix is: ");
-        System.out.println(currentMultiple);
+//        System.out.println("After all multiplications, the quotient matrix is: ");
+//        System.out.println(currentMultiple);
 
         BigInteger x = currentMultiple.matrix[0][0];
         BigInteger y = currentMultiple.matrix[0][1];
 
-        System.out.printf("x = %d, y = %d, therefore %d * %d + %d * %d = %d\n",
-                y, x, y, tmpM, x, tmpN, gcdValues.getLeft());
+//        System.out.printf("x = %d, y = %d, therefore %d * %d + %d * %d = %d\n",
+//                y, x, y, tmpM, x, tmpN, gcdValues.getLeft());
         return Pair.of(y, x);
     }
 
@@ -340,7 +340,4 @@ public class Euclidean {
         str.append("\n");
         return str.toString();
     }
-
-    // TODO
-    //public static int findMultiplicativeInverse()
 }

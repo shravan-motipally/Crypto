@@ -5,10 +5,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 
 import static java.math.BigInteger.*;
-import static org.crypto.ElGamal.generateCommonGroup;
-import static org.crypto.ElGamal.getJointKey;
+import static org.crypto.ElGamal.*;
 import static org.crypto.FastExponentiation.fastExponentiation;
 import static org.crypto.Primes.isPrimeMillerRabin;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +31,35 @@ public class ElGamalTest {
         });
     }
 
+    @Test
+    public void ensurePublicKeyGeneratedCorrectly() {
+        BigInteger group = Primes.generateLargePrimeWithNBits(24);
+        Pair<ElGamalPair, BigInteger> keyAndSecret = generatePublicKeyAndSecret(group);
+        BigInteger secret = keyAndSecret.getRight();
+        ElGamalPair pubKey = keyAndSecret.getLeft();
+        assertEquals(pubKey.getGenerator().modPow(secret, group), pubKey.getEncryptionKey());
+        keyAndSecret = generatePublicKeyAndSecret(group);
+        if (secret.equals(keyAndSecret.getRight())) { // not asserting here as there is very little chance of generating same, but is non zero.
+            System.err.println("Same secret used for public key generation.");
+        }
+    }
 
+    @Test
+    public void ensurePublicKeyGeneratorIsGeneratedCorrectly() {
+        BigInteger group = Primes.generateLargePrimeWithNBits(10);
+        Pair<ElGamalPair, BigInteger> keyAndSecret = generatePublicKeyAndSecret(group);
+        BigInteger generator = keyAndSecret.getLeft().getGenerator();
+        HashMap<BigInteger, Boolean> elements = new HashMap<>();
+
+        for (BigInteger i = ZERO; i.compareTo(group.subtract(ONE)) < 0; i = i.add(ONE)) {
+            BigInteger val = generator.modPow(i, group);
+            elements.put(val, true);
+        }
+
+        for (BigInteger i = ONE; i.compareTo(group.subtract(ONE)) <= 0; i = i.add(ONE)) {
+            assertTrue(elements.get(i));
+        }
+    }
 
     @Test
     public void ensureInverseMethodWorksAsIntended() {
@@ -47,7 +75,7 @@ public class ElGamalTest {
     public void testElGamalWithTeamMember() {
         BigInteger group = generateCommonGroup(24);
         assertTrue(isPrimeMillerRabin(group, 5));
-        Pair<ElGamalPair, BigInteger> ourDetails = ElGamal.generatePublicKeyAndSecret(group);
+        Pair<ElGamalPair, BigInteger> ourDetails = generatePublicKeyAndSecret(group);
 
         // here we ask them for their public key only.
         Pair<ElGamalPair, BigInteger> otherDetails = ElGamal.generatePublicKeyAndSecretUsingKnownGenerator(group, ourDetails.getLeft().getGenerator());
@@ -123,7 +151,7 @@ public class ElGamalTest {
         ElGamalPair bobEncKey = new ElGamalPair(group, generator, new BigInteger("15682381"));
         ElGamalPair aliceEncKey = new ElGamalPair(group, generator, new BigInteger("7197288"));
 
-        BigInteger message = new BigInteger("");
+        BigInteger message = new BigInteger("1314");
 
         assertEquals(message, ElGamal.eavesdrop(encryptedMessage, aliceEncKey, bobEncKey));
     }

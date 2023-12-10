@@ -2,33 +2,25 @@ package org.crypto;
 
 import model.RSAPair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static java.math.BigInteger.*;
+import static java.math.BigInteger.ONE;
+import static java.math.BigInteger.ZERO;
 import static org.crypto.Euclidean.findGcdUsingEuclidean;
 import static org.crypto.Factorization.findAllFactorsUsingRhoFactorization;
 import static org.crypto.FastExponentiation.fastExponentiation;
-import static org.crypto.Primes.isPrimeMillerRabin;
-import static org.crypto.Primes.phi;
-import static org.crypto.RandomGenerator.bbgGenerator;
 
 public class RSA {
 
-    private static Logger logger = LoggerFactory.getLogger(RSA.class);
-
     public static BigInteger encrypt(BigInteger plaintext, RSAPair publicKey) {
-        logger.info("Creating cipher text for {} with publicKey {}", plaintext, publicKey);
+        System.out.printf("Creating cipher text for %s with publicKey %s\n", plaintext, publicKey);
         return fastExponentiation(plaintext, publicKey.getExponent(), publicKey.getModulus());
     }
 
     public static BigInteger decrypt(BigInteger ciphertext, RSAPair privateKey) {
-        logger.info("Creating plain text for {} with privateKey {}", ciphertext, privateKey);
+        System.out.printf("Creating plain text for %s with privateKey %s\n", ciphertext, privateKey);
         return fastExponentiation(ciphertext, privateKey.getExponent(), privateKey.getModulus());
     }
 
@@ -47,25 +39,11 @@ public class RSA {
         return fastExponentiation(ciphertext, decryptionCoefficient, publicKey.getModulus());
     }
 
-    public static Pair<BigInteger, BigInteger> generatePAndQ() {
-        BigInteger p = Primes.generateLargePrimeWithNBits(1024);
-        while (!p.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3))) {
-            p = Primes.generateLargePrimeWithNBits(1024);
-        }
-        System.out.println("Chosen p value: " + p);
-        BigInteger q = Primes.generateLargePrimeWithNBits(1024);
-        while (!q.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3))) {
-            q = Primes.generateLargePrimeWithNBits(1024);
-        }
-        return Pair.of(p, q);
-    }
-
     public static Pair<BigInteger, BigInteger> generatePAndQ(int maxBits) {
         BigInteger p = Primes.generateLargePrimeWithNBits(maxBits);
         while (!p.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3))) {
             p = Primes.generateLargePrimeWithNBits(maxBits);
         }
-        System.out.println("Chosen p value: " + p);
         BigInteger q = Primes.generateLargePrimeWithNBits(maxBits);
         while (!q.mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3))) {
             q = Primes.generateLargePrimeWithNBits(maxBits);
@@ -97,35 +75,21 @@ public class RSA {
         return Pair.of(exponent, leftCoeff);
     }
 
-    public static Pair<RSAPair, RSAPair> generatePublicAndPrivateKey() {
-        Pair<BigInteger, BigInteger> pq = generatePAndQ();
-        BigInteger n = pq.getLeft().multiply(pq.getRight());
-        System.out.println("generated p and q");
-        Pair<BigInteger, BigInteger> encryptionDecryptionExponents = generateEncryptionAndDecryptionExponents(pq);
-        BigInteger encryptionExponent = encryptionDecryptionExponents.getLeft();
-        System.out.println("Generated encryptionExponent");
-        RSAPair left = new RSAPair(encryptionExponent, n);
-
-        BigInteger decryptionExponent = encryptionDecryptionExponents.getRight();
-        System.out.println("Generated decryptionExponent");
-        RSAPair right = new RSAPair(decryptionExponent, n);
-
-        return Pair.of(left, right);
-    }
-
     public static Pair<RSAPair, RSAPair> generatePublicAndPrivateKey(int maxBits) {
         Pair<BigInteger, BigInteger> pq = generatePAndQ(maxBits);
         BigInteger n = pq.getLeft().multiply(pq.getRight());
-        System.out.println("generated p and q");
+        System.out.println("Bob generated p and q, p = " + pq.getLeft() + ", q = " + pq.getRight());
         Pair<BigInteger, BigInteger> encryptionDecryptionExponents = generateEncryptionAndDecryptionExponents(pq);
         BigInteger encryptionExponent = encryptionDecryptionExponents.getLeft();
-        System.out.println("Generated encryptionExponent");
+        System.out.println("Generated encryptionExponent: " + encryptionExponent);
         RSAPair left = new RSAPair(encryptionExponent, n);
 
         BigInteger decryptionExponent = encryptionDecryptionExponents.getRight();
-        System.out.println("Generated decryptionExponent");
+        System.out.println("Generated decryptionExponent: " + decryptionExponent);
         RSAPair right = new RSAPair(decryptionExponent, n);
 
         return Pair.of(left, right);
     }
+
+//    public static RSAPair generatePublicKey
 }

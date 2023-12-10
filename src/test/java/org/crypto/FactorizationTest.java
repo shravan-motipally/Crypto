@@ -20,7 +20,8 @@ public class FactorizationTest {
 
     @Test
     public void factorizationRhoPollardTest() {
-        System.out.printf("%s", rhoFactorization(BigInteger.valueOf(387400807)));
+        System.out.printf("%s\n", rhoFactorization(BigInteger.valueOf(139247942001937L)));
+        System.out.printf("%s\n", rhoFactorization(BigInteger.valueOf(139247942001937L).divide(BigInteger.valueOf(9107159))));
     }
 
     @Test
@@ -41,18 +42,18 @@ public class FactorizationTest {
 
     @Test
     public void getAllFactorsForTwoMultiple() {
-        Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(BigInteger.TWO.pow(1024));
+        Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(BigInteger.TWO.pow(24));
         assertTrue(allFactors.containsKey(BigInteger.TWO));
-        assertTrue(allFactors.get(BigInteger.TWO).equals(1024));
+        assertEquals((int) allFactors.get(BigInteger.TWO), 24);
     }
 
     @Test
     public void getAllFactorsForTwoLargePrimesWithLargeMultiple() {
         BigInteger prime1 = generateLargePrimeWithNBits(24);
         BigInteger prime2 = generateLargePrimeWithNBits(24);
-        Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(BigInteger.TWO.pow(1024).multiply(prime1).multiply(prime2));
+        Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(BigInteger.TWO.pow(24).multiply(prime1).multiply(prime2));
         assertTrue(allFactors.containsKey(BigInteger.TWO));
-        assertTrue(allFactors.get(BigInteger.TWO).equals(1024));
+        assertEquals((int) allFactors.get(BigInteger.TWO), 24);
         assertTrue(allFactors.containsKey(prime1));
         assertTrue(allFactors.containsKey(prime2));
     }

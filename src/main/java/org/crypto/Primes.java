@@ -97,7 +97,7 @@ public class Primes {
                 }
             } // else continue
         }
-        System.out.printf("Prime factorization of is %d = ", n);
+//        System.out.printf("Prime factorization of is %d = ", n);
         if (!primeFactorization.isEmpty()) {
             AtomicLong multiple = new AtomicLong(1L);
             primeFactorization.forEach((prime, exponent) -> {
@@ -137,7 +137,7 @@ public class Primes {
                 }
             } // else continue
         }
-        System.out.printf("Prime factorization of %s is = %s", n, showFactors(primeFactorization));
+//        System.out.printf("Prime factorization of %s is = %s", n, showFactors(primeFactorization));
         return primeFactorization;
     }
 
@@ -156,64 +156,64 @@ public class Primes {
         }
 
         if (primeToCheck.mod(TWO).equals(ZERO)) {
-            System.out.printf("Given number %s is even, so its not a prime\n", primeToCheck);
+//            System.out.printf("Given number %s is even, so its not a prime\n", primeToCheck);
             millerRabinStore.put(primeToCheck, false);
             return false;
         }
         if (primeToCheck.compareTo(ZERO) <= 0) {
-            System.out.println("Negative number entered, bad input.");
+//            System.out.println("Negative number entered, bad input.");
             millerRabinStore.put(primeToCheck, false);
             return false;
         }
-        System.out.printf("Starting miller rabin primality test.\n n = %s\n", primeToCheck);
+//        System.out.printf("Starting miller rabin primality test.\n n = %s\n", primeToCheck);
         // now we know that the number is odd.
         BigInteger m = primeToCheck.subtract(ONE);
        // System.out.printf("n-1 = %s\n", m);
         BigInteger r = ZERO;
-        System.out.printf("Figuring out the number of 2 factors that go into %s\n", m);
+//        System.out.printf("Figuring out the number of 2 factors that go into %s\n", m);
         while (m.mod(TWO).equals(ZERO)) {
             r = r.add(ONE);
             m = m.divide(TWO);
         }
         assert(!m.mod(TWO).equals(ZERO));
-        System.out.printf("%s - 1 = 2 ^ %s * %s\n", primeToCheck, r, m);
+//        System.out.printf("%s - 1 = 2 ^ %s * %s\n", primeToCheck, r, m);
         // by now we have r and m.  We begin miller rabin.
         for (int i = 0; i < numberOfTrials; i++) {
             BigInteger b = randomBigIntegerWithin(primeToCheck.subtract(ONE));  // randomly generate number between 1 and primeToCheck - 1;
 
-            System.out.printf("Generated random number between 1 and %s = %s\n", primeToCheck.subtract(ONE), b);
+//            System.out.printf("Generated random number between 1 and %s = %s\n", primeToCheck.subtract(ONE), b);
             // first step
             BigInteger res = fastExponentiation(b, m, primeToCheck);
-            //System.out.printf("%s ^ %s mod %s = %s\n", b, m, primeToCheck, res);
+//            System.out.printf("%s ^ %s mod %s = %s\n", b, m, primeToCheck, res);
 
             // second step
             if (res.equals(ONE) || res.equals(primeToCheck.subtract(ONE)) || res.equals(BigInteger.valueOf(-1))) {
-                //System.out.printf("One of the following is true %s = 1\n%s = %s - 1\n%s = -1\nSo we stop.\n", res, res, primeToCheck, res);
+//                System.out.printf("One of the following is true %s = 1\n%s = %s - 1\n%s = -1\nSo we stop.\n", res, res, primeToCheck, res);
                 millerRabinStore.put(primeToCheck, true);
                 return true;
             } else {
-                //System.out.printf("%s != 1\n%s != %s - 1\n%s != -1\nSo we continue...\n", res, res, primeToCheck, res);
+//                System.out.printf("%s != 1\n%s != %s - 1\n%s != -1\nSo we continue...\n", res, res, primeToCheck, res);
             }
 
             for (BigInteger s = ONE; s.compareTo(r.subtract(ONE)) <= 0; s = s.add(ONE)) {
-               // System.out.printf("Trial #%s\n", s);
+//                System.out.printf("Trial #%s\n", s);
 
-                BigInteger x = (b.multiply(b)).mod(primeToCheck);
-                //System.out.printf("%s = %s^2 mod %s\n", x, b, primeToCheck);
+                BigInteger x = (res.multiply(res)).mod(primeToCheck);
+//                System.out.printf("%s = %s^2 mod %s\n", x, res, primeToCheck);
                 b = x;
 
                 if (b.equals(primeToCheck.subtract(ONE)) || b.equals(BigInteger.valueOf(-1))) {
-                    //System.out.printf("%s is either equal to %s - 1 or -1\nTherefore, it is probably prime.", b, primeToCheck);
+//                    System.out.printf("%s is either equal to %s - 1 or -1\nTherefore, it is probably prime.", b, primeToCheck);
                     millerRabinStore.put(primeToCheck, true);
                     return true;
                 } else if (b.equals(ONE)) {
-                    //System.out.printf("%s is equal to 1\nTherefore, it is composite.", b, primeToCheck);
+//                    System.out.printf("%s is equal to 1\nTherefore, it is composite.", b, primeToCheck);
                     millerRabinStore.put(primeToCheck, false);
                     return false;
                 }
             }
         }
-        System.out.println("None of the trials have given a suitable result.  Therefore we cannot conclude it is a prime.");
+//        System.out.println("None of the trials have given a suitable result.  Therefore we cannot conclude it is a prime.");
         millerRabinStore.put(primeToCheck, false);
         return false;
     }
@@ -238,28 +238,28 @@ public class Primes {
     public static BigInteger generateLargePrimeWithNBits(int n) {
         BigInteger testNumber;
         BigInteger tries = TWO.pow(n).subtract(TWO.pow(n-1));
-        System.out.println("Starting to generate large prime number");
-        System.out.println("# of tries: " + tries);
+//        System.out.println("Starting to generate large prime number");
+//        System.out.println("# of tries: " + tries);
         do {
             testNumber = randomBigIntegerWithin(TWO.pow(n-1), TWO.pow(n));
-            System.out.println();
-            System.out.printf("Number generated: %s\n", testNumber);
+//            System.out.println();
+//            System.out.printf("Number generated: %s\n", testNumber);
             if (testNumber.mod(TWO).equals(ZERO)) {
                 testNumber = testNumber.subtract(ONE); // make it odd.
                // System.out.printf("Even # generated, so subtracting one. Number: %s\n", testNumber);
             }
             tries = tries.subtract(ONE);
-            System.out.printf("Try #: %s\n", tries);
-            System.out.printf("tries.compareTo(ZERO) > 0: %b & ", tries.compareTo(ZERO) > 0);
-            System.out.printf("isNumberDivisibleWithinPrimesLessThan1000: %b & ", isNumberDivisibleWithinPrimesLessThan1000(testNumber));
-            System.out.printf("!isPrimeMillerRabinTest(testNumber, 5): %b\n", !isPrimeMillerRabin(testNumber, 5));
+//            System.out.printf("Try #: %s\n", tries);
+//            System.out.printf("tries.compareTo(ZERO) > 0: %b & ", tries.compareTo(ZERO) > 0);
+//            System.out.printf("isNumberDivisibleWithinPrimesLessThan1000: %b & ", isNumberDivisibleWithinPrimesLessThan1000(testNumber));
+//            System.out.printf("!isPrimeMillerRabinTest(testNumber, 5): %b\n", !isPrimeMillerRabin(testNumber, 5));
         } while (tries.compareTo(ZERO) > 0
                 && (isNumberDivisibleWithinPrimesLessThan1000(testNumber)
                 || !isPrimeMillerRabin(testNumber, 5)));
 
         if (tries.equals(ZERO)) {
             // at this point - most likely trials have not found a result.
-            System.err.println("Trials have concluded with no prime number.");
+//            System.err.println("Trials have concluded with no prime number.");
             throw new RuntimeException("No prime number found");
         }
         return testNumber;
