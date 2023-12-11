@@ -102,45 +102,78 @@ public class ElGamalTest {
         assertEquals(message, ElGamal.decrypt(encryptedMessage, group, otherDetails.getRight(), ourDetails.getLeft()));
     }
 
+    @Test
+    public void generateGroupAndGenerator() {
+        BigInteger group = generateCommonGroup(24);
+        assertTrue(isPrimeMillerRabin(group, 5));
+        Pair<ElGamalPair, BigInteger> ourDetails = generatePublicKeyAndSecret(group);
+        System.out.println(ourDetails.getLeft());
+        System.out.println("encryption secret (e): " + ourDetails.getRight());
+    }
 
     @Test
-    public void testElGamalWithTeamAsAlice() {
-        BigInteger group = new BigInteger("10901741");
-        BigInteger generator = new BigInteger("7200621");
-        BigInteger myEncryptionKey = new BigInteger("4855820");
-        BigInteger mySecret = new BigInteger("8316155");
-        BigInteger theirKey = new BigInteger("7106903");
-        assertTrue(isPrimeMillerRabin(group, 5));
+    public void generateBobsEncryptionKey() {
+        BigInteger group = new BigInteger("11171861");
+        BigInteger generator = new BigInteger("772296");
+        Pair<ElGamalPair, BigInteger> bobsDetails = generatePublicKeyAndSecretUsingKnownGenerator(group, generator);
+        System.out.println(bobsDetails.getLeft());
+        System.out.println("bobs encryption secret (e): " + bobsDetails.getRight());
+    }
+
+    @Test
+    public void testElGamalAsAlice() {
+        BigInteger group = new BigInteger("10120921");
+        BigInteger generator = new BigInteger("7461015");
+        BigInteger aliceEncryptionKey = new BigInteger("6092743");
+        BigInteger aliceSecret = new BigInteger("1015823");
+        BigInteger bobEncryptionKey = new BigInteger("7868224");
+        assertTrue(isPrimeMillerRabin(group, 10));
 
         BigInteger message = new BigInteger("9458119"); // as group is prime
+        assertTrue(message.compareTo(group) < 0);
 
-        Pair<ElGamalPair, BigInteger> ourDetails = Pair.of(new ElGamalPair(group, generator, myEncryptionKey), mySecret);
-        Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, theirKey), null);
+        /**
+         * ElGamalPair (group, generator, encryption key = generator ^ secret mod group)
+         */
+        Pair<ElGamalPair, BigInteger> ourDetails = Pair.of(new ElGamalPair(group, generator, aliceEncryptionKey), aliceSecret);
+        Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, bobEncryptionKey), null);
 
         BigInteger encryptedMessage = ElGamal.encrypt(message, group, ourDetails.getRight(), otherDetails.getLeft());
 
         //Share the following with the team.
         System.out.println("Encrypted message: " + encryptedMessage);
+        assertEquals(message.multiply(
+                FastExponentiation.fastExponentiation(otherDetails.getLeft().getEncryptionKey(), ourDetails.getRight(), group))
+                .mod(group), encryptedMessage);
     }
 
 
     @Test
-    public void testElGamalWithTeamAsBob() {
+    public void testElGamalAsBob() {
         BigInteger group = new BigInteger("16300051");
         BigInteger generator = new BigInteger("6353629");
         BigInteger aliceEncryptionKey = new BigInteger("1183985");
-        BigInteger mySecret = new BigInteger("4309990");
+        BigInteger bobSecret = new BigInteger("4309990");
         BigInteger bobKey = new BigInteger("1378805");
         assertTrue(isPrimeMillerRabin(group, 5));
 
         BigInteger message = new BigInteger("11335333");
         assert(message.compareTo(group) < 0);
 
+        /**
+         * ElGamalPair (group, generator, encryption key = generator ^ secret mod group)
+         */
         Pair<ElGamalPair, BigInteger> aliceDetails = Pair.of(new ElGamalPair(group, generator, aliceEncryptionKey), null);
-        Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, bobKey), mySecret);
+        Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, bobKey), bobSecret);
 
         BigInteger encryptedMessage = new BigInteger("8200878");
-        assertEquals(message, ElGamal.decrypt(encryptedMessage, group, otherDetails.getRight(), aliceDetails.getLeft()));
+        BigInteger decryptedMessage = ElGamal.decrypt(encryptedMessage, group, otherDetails.getRight(), aliceDetails.getLeft());
+
+        System.out.println("Decrypted message: " + decryptedMessage);
+        assertEquals(decryptedMessage, FastExponentiation.fastExponentiation(
+                FastExponentiation.fastExponentiation(aliceDetails.getLeft().getEncryptionKey(), otherDetails.getRight(), group),
+                group.subtract(TWO), group).multiply(encryptedMessage).mod(group));
+        assertEquals(message, decryptedMessage);
     }
 
     @Test
@@ -152,8 +185,15 @@ public class ElGamalTest {
         ElGamalPair aliceEncKey = new ElGamalPair(group, generator, new BigInteger("7197288"));
 
         BigInteger message = new BigInteger("1314");
+        BigInteger eavesdroppedMessage = ElGamal.eavesdrop(encryptedMessage, aliceEncKey, bobEncKey);
 
-        assertEquals(message, ElGamal.eavesdrop(encryptedMessage, aliceEncKey, bobEncKey));
+        BigInteger recoveredAliceSecret = LittleStepGiantStep.findDiscreteLog_B_Of_A_InZ_P(generator, aliceEncKey.getEncryptionKey(), group);
+        BigInteger recoveredBobSecret = LittleStepGiantStep.findDiscreteLog_B_Of_A_InZ_P(generator, bobEncKey.getEncryptionKey(), group);
+        BigInteger jointKey = fastExponentiation(generator, recoveredAliceSecret.multiply(recoveredBobSecret), group);
+        BigInteger inverse = fastExponentiation(jointKey, group.subtract(TWO), group);
+
+        assertEquals(eavesdroppedMessage, encryptedMessage.multiply(inverse).mod(group));
+        assertEquals(message, eavesdroppedMessage);
     }
 
 }

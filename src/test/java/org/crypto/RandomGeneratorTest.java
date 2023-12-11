@@ -13,7 +13,7 @@ public class RandomGeneratorTest {
     public void testBbgGeneration() {
         BigInteger integer = RandomGenerator.bbgGenerator(24);
         assertTrue(integer.compareTo(TWO.pow(24)) < 0);
-        System.out.println("integer generated: " + integer);
+        System.out.println("Random integer generated: " + integer);
     }
 
 }

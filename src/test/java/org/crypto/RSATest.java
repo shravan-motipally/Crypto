@@ -2,6 +2,7 @@ package org.crypto;
 
 import model.RSAPair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -14,10 +15,20 @@ import static org.junit.jupiter.api.Assertions.*;
 public class RSATest {
 
     @Test
+    public void generateBobsPublicKey() {
+        Pair<RSAPair, RSAPair> bobsKeys = generatePublicAndPrivateKey(24);
+        System.out.println("Bob's public key: " + bobsKeys.getLeft());
+        System.out.println("Bob's private key: " + bobsKeys.getRight());
+    }
+
+    @Test
     public void encryptionTestRSA() {
         BigInteger msg = Utils.randomBigIntegerWithin(TWO.pow(24));
         System.out.println("Alice trying to send the following message (in unecrypted form): " + msg + "");
         Pair<RSAPair, RSAPair> bobsPair = generatePublicAndPrivateKey(24);
+        System.out.println("Bob's public and private keys: ");
+        System.out.println("Public: " + bobsPair.getLeft());
+        System.out.println("Private: " + bobsPair.getRight());
         assertEquals(bobsPair.getLeft().getModulus(), bobsPair.getRight().getModulus());
         BigInteger encryptedMsg = encrypt(msg, bobsPair.getLeft());
         System.out.println("Alice's encrypted message: " + encryptedMsg);
@@ -36,15 +47,26 @@ public class RSATest {
     }
 
     @Test
+    public void decryptMessageTest() {
+        BigInteger aliceEncryptedMsg = new BigInteger("25600255680903");
+        RSAPair bobsPrivKey = new RSAPair(new BigInteger("17699350272509"), new BigInteger("93780358505089"));
+        BigInteger decryptedMsg = RSA.decrypt(aliceEncryptedMsg, bobsPrivKey);
+        System.out.println(decryptedMsg);
+    }
+
+    @Test
     public void decryptionTestRSA() {
-        BigInteger p = new BigInteger("9107159");
-        BigInteger q = new BigInteger("15289943");
-        BigInteger message = new BigInteger("3333");
-        BigInteger aliceEncryptedMsg = new BigInteger("38122060084554");
-        RSAPair bobsPubKey = new RSAPair(new BigInteger("13647839"), new BigInteger("139247942001937"));
-        RSAPair bobsPrivKey = new RSAPair(new BigInteger("87885123486543"), new BigInteger("139247942001937"));
+        BigInteger p = new BigInteger("15918611");
+        BigInteger q = new BigInteger("11733763");
+        BigInteger n = p.multiply(q);
+        BigInteger message = new BigInteger("4982934");
+        BigInteger aliceEncryptedMsg = new BigInteger("142571086419239");
+        RSAPair bobsPubKey = new RSAPair(new BigInteger("61372794578543"), new BigInteger("186785208763193"));
+        RSAPair bobsPrivKey = new RSAPair(new BigInteger("122018261679707"), new BigInteger("186785208763193"));
         assertEquals(ONE, bobsPubKey.getExponent().multiply(bobsPrivKey.getExponent()).mod(p.subtract(ONE).multiply(q.subtract(ONE))));
         BigInteger decryptedMsg = RSA.decrypt(aliceEncryptedMsg, bobsPrivKey);
+
+        System.out.println(decryptedMsg);
         assertEquals(message, decryptedMsg);
     }
 

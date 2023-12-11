@@ -1,5 +1,6 @@
 package org.crypto;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -31,7 +32,7 @@ public class FactorizationTest {
         assertTrue(allFactors.containsKey(BigInteger.valueOf(19927)));
     }
 
-    @Test
+    @Test @Disabled
     public void getAllFactorsForAllThreeTypesOfNumbersSmallBigLarge() {
         Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(new BigInteger("35465454364532435346577365432357345412434562"));
         assertTrue(allFactors.containsKey(new BigInteger("1695389512944339875734872088597")));

@@ -27,7 +27,7 @@ public class ElGamalPair {
 
     @Override
     public String toString() {
-        return "El Gamal[G=" + group + "," +
+        return "El Gamal[Group=" + group + "," +
                 " generator: " + generator + "," +
                 " encryptionKey: " + encryptionKey + ".";
     }

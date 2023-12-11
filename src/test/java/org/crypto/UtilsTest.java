@@ -32,4 +32,13 @@ public class UtilsTest {
             randomBigIntegerWithin(ZERO);
         });
     }
+
+    @Test
+    public void testLibraryRandomNumberGenerator() {
+        BigInteger min = randomBigIntegerWithin(TWO.pow(12)); // the closer this gets to 24, the longer the test will take.
+        BigInteger max = randomBigIntegerWithin(TWO.pow(24));
+        BigInteger randomGeneratedNumber = randomBigIntegerWithin(min, max);
+        assertTrue(randomGeneratedNumber.compareTo(max) < 0);
+        assertTrue(randomGeneratedNumber.compareTo(min) > 0);
+    }
 }

@@ -239,6 +239,9 @@ public class Euclidean {
     }
 
     public static Pair<BigInteger, BigInteger> findXYForExtendedEuclidean(BigInteger m, BigInteger n) {
+        if (m.equals(ZERO)) {
+            return Pair.of(n, ONE);
+        }
         // form = n = q*m + r
         if (m.equals(n)) {
             return Pair.of(BigInteger.TWO, BigInteger.valueOf(-1L));

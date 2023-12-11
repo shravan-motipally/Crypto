@@ -1,5 +1,6 @@
 package org.crypto;
 
+import static java.math.BigInteger.ZERO;
 import static java.math.BigInteger.valueOf;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +28,11 @@ class EuclideanTest {
         Pair<Integer, Integer> xyPair = Euclidean.findXYForExtendedEuclidean(102313, 103927);
         assertEquals(xyPair.getLeft(), 39858);
         assertEquals(xyPair.getRight(), -39239);
+    }
+
+    @Test
+    public void zeroTest() {
+        Pair<BigInteger, BigInteger> xyPair = Euclidean.findXYForExtendedEuclidean(ZERO, valueOf(103927));
     }
 
     @Test

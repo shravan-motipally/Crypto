@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.crypto.Primes.generateLargePrimeWithNBits;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PrimesTest {
@@ -52,9 +53,17 @@ class PrimesTest {
 
     @Test
     public void testPrimeGenerationLogic() {
-        for (int i = 0; i < 10; i++) {
-            assertTrue(Primes.isPrimeMillerRabin(BigInteger.valueOf(16396147), 10));
+        for (int i = 0; i < 100; i++) {
+            BigInteger prime = generateLargePrimeWithNBits(24);
+            assertTrue(Primes.isPrimeMillerRabin(prime, 5));
         }
+    }
+
+    @Test
+    public void getPrimeNumberForTesting() {
+        BigInteger prime = generateLargePrimeWithNBits(24);
+        assertTrue(Primes.isPrimeMillerRabin(prime, 5));
+        System.out.println(prime);
     }
 
     @Test
@@ -63,4 +72,5 @@ class PrimesTest {
         assertTrue(Primes.millerRabinStore.containsKey(BigInteger.valueOf(100000003709L)));
         assertEquals(isPrime,Primes.millerRabinStore.get(BigInteger.valueOf(100000003709L)));
     }
+
 }
