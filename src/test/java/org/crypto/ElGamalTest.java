@@ -150,14 +150,14 @@ public class ElGamalTest {
 
     @Test
     public void testElGamalAsBob() {
-        BigInteger group = new BigInteger("16300051");
+        BigInteger group = new BigInteger("10901741");
         BigInteger generator = new BigInteger("6353629");
-        BigInteger aliceEncryptionKey = new BigInteger("1183985");
-        BigInteger bobSecret = new BigInteger("4309990");
-        BigInteger bobKey = new BigInteger("1378805");
+        BigInteger aliceEncryptionKey = new BigInteger("4855820");
+        BigInteger bobSecret = new BigInteger("7215878");
+        BigInteger bobKey = new BigInteger("7215878");
         assertTrue(isPrimeMillerRabin(group, 5));
 
-        BigInteger message = new BigInteger("11335333");
+        BigInteger message = new BigInteger("48276");
         assert(message.compareTo(group) < 0);
 
         /**
@@ -166,7 +166,7 @@ public class ElGamalTest {
         Pair<ElGamalPair, BigInteger> aliceDetails = Pair.of(new ElGamalPair(group, generator, aliceEncryptionKey), null);
         Pair<ElGamalPair, BigInteger> otherDetails = Pair.of(new ElGamalPair(group, generator, bobKey), bobSecret);
 
-        BigInteger encryptedMessage = new BigInteger("8200878");
+        BigInteger encryptedMessage = new BigInteger("10381893");
         BigInteger decryptedMessage = ElGamal.decrypt(encryptedMessage, group, otherDetails.getRight(), aliceDetails.getLeft());
 
         System.out.println("Decrypted message: " + decryptedMessage);

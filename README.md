@@ -1,6 +1,30 @@
 # Crypto
 Collection of algorithms that enable RSA and El Gamal
 
+# Requirements to run these tests.
+Java version 11 is required to work with this project.  Please find instructions on getting Java 11 as follows.
+
+Please install sdkman by following the directions here:  https://sdkman.io/install
+
+
+```shell
+$ sdk install java 11.0.21-tem
+```
+
+<h><i>Trouble?</i></h>
+<br/>
+As of 12/10 - these instructions work, if not, please find a suitable Java 11 version identifier by doing the following:
+
+```shell
+$ sdk list java
+```
+
+Please note that you may install maven from sdk man as well; however, the maven wrapper is already part 
+of the project and will allow you to work without installing it yourself.  Please follow directions closely.
+
+# Known issues:
+Factorization using Rho is sometimes shown to reach max tries, please re-run the tests and they will work.
+
 # Instructions to run tests.
 
 ### Within *ix based systems use the following command for maven.
@@ -84,12 +108,13 @@ $ ./mvnw test -Dtest="RSATest#eavesdroppingTest"
 ### Within *ix based systems
 
 #### Testing El Gamal Encryption
-0. Generate a common group and public key via secret using the following commands.
+0. Generate a common group, generator, Alice's public key and secret & Bob's public and secret using the following commands.
 ```java
 $ ./mvnw test -Dtest="ElGamalTest#generateGroupAndGenerator"
+$ ./mvnw test -Dtest="ElGamalTest#generateBobsEncryptionKey"
 ```
 1. Find `ElGamalTest.java` and find the test `testElGamalAsAlice()`.
-2. Change the parameters as follows:
+2. Change the values for the parameters as you wish below:  Please feel free to update the message to a random number by following instructions above.
 ```java
 BigInteger group = new BigInteger("10901741");
 BigInteger generator = new BigInteger("7200621");
@@ -106,7 +131,7 @@ $ ./mvnw test -Dtest="ElGamalTest#testElGamalAsAlice"
 
 #### Testing El Gamal Decryption
 1. Find `ElGamalTest.java` and find the test `testElGamalAsBob()`.
-2. Change the parameters as follows:
+2. Change the values for the parameters as you wish below:
 ```java
 BigInteger group = new BigInteger("16300051");
 BigInteger generator = new BigInteger("6353629");
@@ -123,7 +148,8 @@ $ ./mvnw test -Dtest="ElGamalTest#testElGamalAsBob"
 
 #### Testing El Gamal Eavesdropping
 1. Find `ElGamalTest.java` and find the test `testElGamalAsEve()`.
-2. Change the parameters as follows:
+2. Change the values for the parameters as you wish below:
+ElGamalPair takes in three constructor arguments. Group, Generator and EncryptionKey
 ```java
 BigInteger group = valueOf(16396147L);
 BigInteger generator = new BigInteger("2");

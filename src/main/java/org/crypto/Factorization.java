@@ -76,6 +76,9 @@ public class Factorization {
     }
 
     public static Map<BigInteger, Integer> findAllFactorsUsingRhoFactorization(BigInteger n)  {
+        if (n.equals(ZERO)) {
+            throw new RuntimeException("Will not factor zero.");
+        }
         if (n.equals(ONE)) {
             // base case.
             return new HashMap<>();
@@ -135,7 +138,7 @@ public class Factorization {
         try {
             List<Integer> primes = Primes.getPrimesUpTo(1000, false);
             for (int i = 0; i < primes.size(); i++) {
-                if (currentPrime.equals(primes.get(i))) {
+                if (currentPrime.equals(valueOf(primes.get(i)))) {
                     if (i == primes.size() -1) {
                         // reached the end
                         throw new RuntimeException("Too many reinitialization, stopping..");
@@ -144,7 +147,7 @@ public class Factorization {
                     }
                 }
             }
-            throw new RuntimeException("Logic error, no prime matched to reinitialize");
+            return TWO;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

@@ -1,7 +1,6 @@
 package org.crypto;
 
-import static java.math.BigInteger.ZERO;
-import static java.math.BigInteger.valueOf;
+import static java.math.BigInteger.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -20,6 +19,21 @@ class EuclideanTest {
     @Test
     public void gcdTestUsingLongs() {
         assertEquals(Euclidean.findGcdUsingEuclidean(12L, 37L).getLeft(), 1);
+    }
+
+    @Test
+    public void gcdTestLimits() {
+        assertEquals(Euclidean.findGcdUsingEuclidean(0L, 37L).getLeft(), 37);
+    }
+
+    @Test
+    public void bigIntGcdTestLimits() {
+        assertEquals(Euclidean.findGcdUsingEuclidean(ZERO, valueOf(37L)).getLeft(), valueOf(37));
+    }
+
+    @Test
+    public void bigIntGcdTestLimitsTwo() {
+        assertEquals(Euclidean.findGcdUsingEuclidean(ONE, valueOf(37L)).getLeft(), ONE);
     }
 
 

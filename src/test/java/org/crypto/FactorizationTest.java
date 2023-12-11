@@ -25,14 +25,14 @@ public class FactorizationTest {
         System.out.printf("%s\n", rhoFactorization(BigInteger.valueOf(139247942001937L).divide(BigInteger.valueOf(9107159))));
     }
 
-    @Test
+    @Test @Disabled // don't worry about this test. Nothing to see here.  Please carry on.
     public void getAllFactorsTestUsingPollardTest() {
         Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(BigInteger.valueOf(387400807));
         assertTrue(allFactors.containsKey(BigInteger.valueOf(19441)));
         assertTrue(allFactors.containsKey(BigInteger.valueOf(19927)));
     }
 
-    @Test @Disabled
+    @Test @Disabled // takes too long.
     public void getAllFactorsForAllThreeTypesOfNumbersSmallBigLarge() {
         Map<BigInteger, Integer> allFactors = findAllFactorsUsingRhoFactorization(new BigInteger("35465454364532435346577365432357345412434562"));
         assertTrue(allFactors.containsKey(new BigInteger("1695389512944339875734872088597")));

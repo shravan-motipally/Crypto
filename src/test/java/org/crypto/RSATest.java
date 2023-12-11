@@ -2,15 +2,13 @@ package org.crypto;
 
 import model.RSAPair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
 import static java.math.BigInteger.*;
-
 import static org.crypto.RSA.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RSATest {
 
@@ -48,8 +46,8 @@ public class RSATest {
 
     @Test
     public void decryptMessageTest() {
-        BigInteger aliceEncryptedMsg = new BigInteger("25600255680903");
-        RSAPair bobsPrivKey = new RSAPair(new BigInteger("17699350272509"), new BigInteger("93780358505089"));
+        BigInteger aliceEncryptedMsg = new BigInteger("35654044114285");
+        RSAPair bobsPrivKey = new RSAPair(new BigInteger("7320868104187"), new BigInteger("94762930171321"));
         BigInteger decryptedMsg = RSA.decrypt(aliceEncryptedMsg, bobsPrivKey);
         System.out.println(decryptedMsg);
     }
@@ -72,8 +70,8 @@ public class RSATest {
 
     @Test
     public void eavesdroppingTestDuringPairing() {
-        BigInteger msg = new BigInteger("35115497060646");
-        RSAPair eavesdroppedRSAPair = new RSAPair(new BigInteger("13647839"), new BigInteger("139247942001937"));
+        BigInteger msg = new BigInteger("173132106911584");
+        RSAPair eavesdroppedRSAPair = new RSAPair(new BigInteger("155212581005987"), new BigInteger("199472392197209"));
         BigInteger eavesdroppedMsg = eavesdrop(msg, eavesdroppedRSAPair);
         System.out.println(eavesdroppedMsg);
     }

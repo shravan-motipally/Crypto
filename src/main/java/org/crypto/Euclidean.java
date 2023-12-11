@@ -66,6 +66,9 @@ public class Euclidean {
     }
 
     public static Pair<Long, List<Long>> findGcdUsingEuclidean(long m, long n) {
+        if (m == 0) {
+            return Pair.of(n, new ArrayList<>(){{ add(1L); }});
+        }
         // form = n = q*m + r
         if (m == n) {
             return Pair.of(m, new ArrayList<>() {{
@@ -103,6 +106,10 @@ public class Euclidean {
     }
 
     public static Pair<BigInteger, List<BigInteger>> findGcdUsingEuclidean(BigInteger m, BigInteger n) {
+        if (m.equals(ZERO)) {
+            List<BigInteger> list = new ArrayList<>() {{ add(ONE); }};
+            return Pair.of(n, list);
+        }
         String key = String.format("%s|%s", m, n);
         String reverseKey = String.format("%s|%s", n, m);
 
