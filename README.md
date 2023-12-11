@@ -111,7 +111,9 @@ $ ./mvnw test -Dtest="RSATest#eavesdroppingTest"
 0. Generate a common group, generator, Alice's public key and secret & Bob's public and secret using the following commands.
 ```java
 $ ./mvnw test -Dtest="ElGamalTest#generateGroupAndGenerator"
+```
 Find `ElGamalTest.java` and find the test `generateBobsEncryptionKey` and paste the values found above for group and generator.  Then run:
+```java
 $ ./mvnw test -Dtest="ElGamalTest#generateBobsEncryptionKey"
 ```
 1. Find `ElGamalTest.java` and find the test `testElGamalAsAlice()`.
